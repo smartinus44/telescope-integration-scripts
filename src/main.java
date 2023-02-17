@@ -33,7 +33,7 @@ public class main implements Runnable {
     @Parameters(paramLabel = "<dbPassword>", defaultValue = "quarkus", description = "Db password")
     String password;
 
-    @Parameters(paramLabel = "<dbUrl>", defaultValue = "jdbc:postgresql://localhost:5432/quarkus", description = "Db password")
+    @Parameters(paramLabel = "<dbUrl>", defaultValue = "jdbc:postgresql://localhost:5432/telescope", description = "Db URL")
     String url;
 
     @Option(names = { "-v",
@@ -64,9 +64,8 @@ public class main implements Runnable {
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
 
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, capability_id);
-            statement.setInt(2, flag_id);
-
+            statement.setInt(1, flag_id);
+            statement.setInt(2, capability_id);
             affectedrows = statement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -196,14 +195,14 @@ public class main implements Runnable {
 
     @Override
     public void run() {
-        System.out.printf("rhacs-compliance-check.py -i %s\n", integrationId);
+        System.out.printf("Running compliance check for Telescope integration: %s\n", integrationId);
 
         processData();
 
         if (capability_id != 0) {
             setCapabilityWithFlag();
-
             setIntegrationLastUpdate();
+                    System.out.printf("Compliance flag updated to: %s\n", flag_id);
         }
     }
 }
