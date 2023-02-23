@@ -22,12 +22,10 @@ import java.util.Set;
 @Command(name = "Greeting", mixinStandardHelpOptions = true)
 public class main implements Runnable {
 
-    String query = "SELECT * from integrations WHERE integration_id = ?";
+//    String query = "SELECT * from integrations WHERE integration_id = ?";
+    String query = "SELECT * from integrations,integration_methods WHERE integration_method_id = integration_methods.id AND integration_method_name = 'telescope-compliance-rhacs'";
 
-    @Parameters(paramLabel = "<id>", defaultValue = "1", description = "Your integration ID is.")
-    Integer integrationId;
-
-    @Parameters(paramLabel = "<dbUsername>", defaultValue = "quarkus", description = "Db username")
+    @Parameters(paramLabel = "<dbUsername>", defaultValue = "telescope", description = "Db username")
     String userName;
 
     @Parameters(paramLabel = "<dbPassword>", defaultValue = "quarkus", description = "Db password")
@@ -146,7 +144,6 @@ public class main implements Runnable {
         try (Connection conn = DriverManager.getConnection(url, userName, password)) {
 
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, integrationId);
             ResultSet rs = statement.executeQuery();
             {
                 while (rs.next()) {
@@ -195,7 +192,7 @@ public class main implements Runnable {
 
     @Override
     public void run() {
-        System.out.printf("Running compliance check for Telescope integration: %s\n", integrationId);
+        System.out.printf("Running RHACS compliance check for Telescope integration \n");
 
         processData();
 
